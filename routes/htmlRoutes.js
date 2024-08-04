@@ -1,23 +1,17 @@
-const router = require("express").Router();
-const controllers = require("../controllers");
-const checkAuth = require("../middleware/auth");
+const express = require('express');
+const router = express.Router();
+const { auth } = require('../controllers');
 
-router.get("/", ({ session: { isLoggedIn } }, res) => {
-  res.render("index", { isLoggedIn });
+router.get('/login', (req, res) => {
+  res.render('login');
 });
 
-router.get("/login", async (req, res) => {
-  if (req.session.isLoggedIn) return res.redirect("/");
-  res.render("login", { error: req.query.error });
+router.get('/signup', (req, res) => {
+  res.render('signup');
 });
 
-router.get("/signup", async (req, res) => {
-  if (req.session.isLoggedIn) return res.redirect("/");
-  res.render("signup", { error: req.query.error });
-});
-
-router.get("/private", checkAuth, ({ session: { isLoggedIn } }, res) => {
-  res.render("protected", { isLoggedIn });
+router.get('/protected', authMiddleware, (req, res) => {
+  res.render('protected');
 });
 
 module.exports = router;

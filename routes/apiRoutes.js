@@ -1,10 +1,8 @@
-const router = require("express").Router();
-const controllers = require("../controllers");
-const checkAuth = require("../middleware/auth");
+const express = require('express');
+const router = express.Router();
+const { user } = require('../controllers');
 
-// admin login/logout
-router.post("/login", controllers.auth.login);
-router.get("/logout", controllers.auth.logout);
-router.post("/signup", controllers.user.create);
+router.post('/addMeal', user.addMeal);
+router.get('/searchFood', user.searchFood);
 
 module.exports = router;

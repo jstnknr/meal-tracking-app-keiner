@@ -1,31 +1,33 @@
-const { User } = require("../models");
+const User = require('../models/User');
 
-async function login(req, res) {
+exports.signup = async (req, res) => {
+  const { username, password } = req.body;
   try {
-    const { username, password } = req.body;
-
-    if (!username || !password)
-      return res.redirect("/login?error=must include username and password");
-
-    const user = await User.findOne({ username });
-
-    if (!user)
-      return res.redirect("/login?error=username or password is incorrect");
-
-    const passwordMatches = await user.checkPassword(password);
-
-    if (!passwordMatches)
-      return res.redirect("/login?error=username or password is incorrect");
-
-    req.session.isLoggedIn = true;
-    req.session.save(() => res.redirect("/"));
-  } catch (err) {
-    res.status(500).send(err.message);
+    const newUser = new User({ username, password });
+    await newUser.save();
+    res.redirect('/login');
+  } catch (error) {
+    res.status(500).send(error.message);
   }
-}
+};
 
-async function logout(req, res) {
-  req.session.destroy(() => res.redirect("/"));
-}
+exports.login = async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const user = await User.findOne({ username });
+    if (user && await user.comparePassword(password)) {
+      req.session.userId = user._id;
+      res.redirect('/protected');
+    } else {
+      res.redirect('/login');
+    }
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
 
-module.exports = { login, logout };
+exports.logout = (req, res) => {
+  req.session.destroy(() => {
+    res.redirect('/');
+  });
+};

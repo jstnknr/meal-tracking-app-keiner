@@ -1,7 +1,10 @@
-const mongoose = require("mongoose");
-const MONGODB_URI = process.env.MONGODB_URI ||
-  `mongodb://localhost:27017/${process.env.npm_package_config_DB_NAME}`;
+const mongoose = require('mongoose');
 
-mongoose.connect(MONGODB_URI);
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/mealTracker', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: false
+});
 
-module.exports = { connection: mongoose.connection, MONGODB_URI };
+module.exports = mongoose.connection;

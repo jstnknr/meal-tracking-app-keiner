@@ -1,22 +1,36 @@
-const { User } = require("../models");
+const axios = require('axios');
+const User = require('../models/User');
+const Meal = require('../models/Meal');
 
-async function create(req, res) {
+exports.getProfile = async (req, res) => {
   try {
-    const { username, password } = req.body;
-
-    if (!username || !password)
-      return res.redirect("/signup?error=must include username and password");
-
-    const user = await User.create({ username, password });
-
-    if (!user) return res.redirect("/signup?error=error creating new user");
-
-    req.session.isLoggedIn = true;
-    req.session.save(() => res.redirect("/"));
-  } catch (err) {
-    console.log(err);
-    return res.redirect(`/signup?error=${err.message}`);
+    const user = await User.findById(req.session.userId).populate('meals');
+    res.render('protected', { user, meals: user.meals });
+  } catch (error) {
+    res.status(500).send(error.message);
   }
-}
+};
 
-module.exports = { create };
+exports.addMeal = async (req, res) => {
+  const { name, calories } = req.body;
+  try {
+    const newMeal = new Meal({ name, calories, user: req.session.userId });
+    await newMeal.save();
+    const user = await User.findById(req.session.userId);
+    user.meals.push(newMeal);
+    await user.save();
+    res.redirect('/protected');
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
+exports.searchFood = async (req, res) => {
+  try {
+    const { query } = req.query;
+    const response = await axios.get(`https://api.nal.usda.gov/fdc/v1/foods/search?query=${query}&api_key=TCsRA3jEWzoJIo09Vq3KtbqdrO1UffemR5zBkLM3`);
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
