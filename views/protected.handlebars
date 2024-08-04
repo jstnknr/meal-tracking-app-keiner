@@ -1,7 +1,43 @@
-{{> header}}
-<main>
-  <h1>This is a private page!</h1>
-  <p>You should only be able to see this page if logged in.</p>
-  <p>Currently, you are {{#unless isLoggedIn}} NOT {{/unless}} logged in.</p>
-  <p>Use the header above to {{#if isLoggedIn}} logout{{else}} login or create an account{{/if}}.</p>
-</main>
+<h1>{{user.username}}'s Profile</h1>
+<h2>Your Meals</h2>
+<ul>
+  {{#each meals}}
+    <li>{{this.name}} - {{this.calories}} calories</li>
+  {{/each}}
+</ul>
+
+<h2>Add a New Meal</h2>
+<form action="/api/addMeal" method="POST">
+  <label for="name">Meal Name:</label>
+  <input type="text" name="name" id="name" required>
+  
+  <label for="calories">Calories:</label>
+  <input type="number" name="calories" id="calories" required>
+  
+  <button type="submit">Add Meal</button>
+</form>
+
+<h2>Search Food</h2>
+<form id="searchForm">
+  <label for="query">Search for food:</label>
+  <input type="text" name="query" id="query" required>
+  <button type="submit">Search</button>
+</form>
+
+<ul id="searchResults"></ul>
+
+<script>
+  document.getElementById('searchForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const query = document.getElementById('query').value;
+    const response = await fetch(`/api/searchFood?query=${query}`);
+    const data = await response.json();
+    const resultsList = document.getElementById('searchResults');
+    resultsList.innerHTML = '';
+    data.foods.forEach(food => {
+      const listItem = document.createElement('li');
+      listItem.textContent = `${food.description} - ${food.foodNutrients.find(n => n.nutrientName === 'Energy').value} calories`;
+      resultsList.appendChild(listItem);
+    });
+  });
+</script>

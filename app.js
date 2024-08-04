@@ -3,14 +3,13 @@ const express = require("express");
 const exphbs = require("express-handlebars");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
-const mongoose = require('./config/connection');  
-
+const { connection, MONGODB_URI } = require("./config/connection");
 const apiRoutes = require("./routes/apiRoutes");
 const htmlRoutes = require("./routes/htmlRoutes");
 const app = express();
 
 const store = new MongoDBStore({
-  uri: mongoose.connection._connectionString,  
+  uri: MONGODB_URI,
   collection: "sessions",
 });
 
