@@ -6,15 +6,16 @@ const { MONGODB_URI } = require('../config/connection');
 
 const seedData = async () => {
   try {
+
     await mongoose.connect(MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      useCreateIndex: true,
-      useFindAndModify: false,
     });
+
 
     await User.deleteMany({});
     await Meal.deleteMany({});
+
 
     const user = new User({ username: 'testuser', password: 'password' });
     await user.save();
