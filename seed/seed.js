@@ -1,24 +1,41 @@
-if (process.env.MONGODB_URI) {
-  console.log(
-    "\x1b[31m%s\x1b[0m",
-    "SEEDING MONGODB PRODUCTION DATABASE!!!\n".repeat(3)
-  );
-  console.log("\x1b[31m%s\x1b[0m", "Don't forget to clear MONGODB_URI!\n");
-  console.log(
-    "\x1b[33m%s\x1b[0m",
-    "Run 'export MONGODB_URI=' or close this terminal after seeding.",
-    "\n"
-  );
-} else {
-  console.log("\x1b[33m%s\x1b[0m", "SEEDING MONGODB LOCAL DB");
-}
+const mongoose = require('mongoose');
+const User = require('../models/User');
+const Meal = require('../models/Meal');
+const { MONGODB_URI } = require('../config/connection');
 
-const { User } = require("../models");
-const { connection } = require("../config/connection");
 
-connection.once("open", async function () {
-  // insert a sample user
-  await User.create({ username: "banana", password: "meatloaf" });
+const seedData = async () => {
+  try {
+    await mongoose.connect(MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+      useFindAndModify: false,
+    });
 
-  connection.close();
-});
+    await User.deleteMany({});
+    await Meal.deleteMany({});
+
+    const user = new User({ username: 'testuser', password: 'password' });
+    await user.save();
+
+
+    const meal1 = new Meal({ name: 'Breakfast', calories: 400, user: user._id });
+    const meal2 = new Meal({ name: 'Lunch', calories: 600, user: user._id });
+
+    await meal1.save();
+    await meal2.save();
+
+
+    user.meals.push(meal1, meal2);
+    await user.save();
+
+    console.log('Database seeded successfully');
+    mongoose.connection.close();  
+  } catch (error) {
+    console.error('Error seeding the database:', error);
+    mongoose.connection.close();  
+  }
+};
+
+seedData();
