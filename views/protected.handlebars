@@ -14,14 +14,14 @@
   <label for="calories">Calories:</label>
   <input type="number" name="calories" id="calories" required>
   
-  <button type="submit">Add Meal</button>
+  <button type="submit" class="btn">Add Meal</button>
 </form>
 
 <h2>Search Food</h2>
 <form id="searchForm">
   <label for="query">Search for food:</label>
   <input type="text" name="query" id="query" required>
-  <button type="submit">Search</button>
+  <button type="submit" class="btn">Search</button>
 </form>
 
 <ul id="searchResults"></ul>
@@ -36,7 +36,8 @@
     resultsList.innerHTML = '';
     data.foods.forEach(food => {
       const listItem = document.createElement('li');
-      listItem.textContent = `${food.description} - ${food.foodNutrients.find(n => n.nutrientName === 'Energy').value} calories`;
+      const calories = food.foodNutrients.find(n => n.nutrientName === 'Energy (Atwater General Factors)')?.value || 'N/A';
+      listItem.textContent = `${food.description} - ${calories} calories`;
       resultsList.appendChild(listItem);
     });
   });

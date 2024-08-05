@@ -24,6 +24,61 @@ body {
   min-height: 100vh;
 }
 
+header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--black);
+  padding: var(--space);
+  margin-bottom: calc(var(--space) * 6);
+}
+
+header nav ul {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+header nav ul li {
+  margin: 0 15px;
+}
+
+header nav ul li a {
+  color: var(--text-color);
+  text-decoration: none;
+  transition: color 200ms;
+}
+
+header nav ul li a:hover,
+header nav ul li a:focus {
+  color: var(--secondary);
+}
+
+.site-logo {
+  text-align: center;
+  color: var(--text-color);
+  text-decoration: none;
+  margin: calc(var(--space) * 4) auto;
+  display: block;
+  font-size: calc(var(--font-size) * 2.5);
+  font-weight: bold;
+}
+
+@media screen and (max-width: 700px) {
+  .site-logo {
+    font-size: calc(var(--font-size) * 1.25);
+    margin: 0;
+  }
+  header .site-logo {
+    font-size: var(--font-size);
+  }
+  header nav ul li {
+    margin: calc(var(--space) / 2);
+  }
+}
+
 main {
   box-sizing: border-box;
   width: 100%;
@@ -32,10 +87,6 @@ main {
   background-color: var(--black);
   padding: var(--space) calc(var(--space) * 3);
   text-align: center;
-}
-
-main,
-main form {
   border-radius: 4px;
 }
 
@@ -82,31 +133,32 @@ button.btn-text:hover,
 button.btn-text:focus {
   color: var(--secondary);
 }
-header {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  background-color: var(--black);
-  margin-bottom: calc(var(--space) * 6);
-}
-header a {
-  margin: var(--space);
-}
-header .site-logo {
-  font-size: calc(var(--font-size) * 1.5);
-  margin: var(--space);
-  margin-right: auto;
+
+form {
+  margin: 20px 0;
 }
 
-.site-logo {
-  text-align: center;
-  color: var(--text-color);
-  text-decoration: none;
-  margin: calc(var(--space) * 4) auto;
+label {
   display: block;
-  font-size: calc(var(--font-size) * 2.5);
-  font-weight: bold;
+  margin: 10px 0 5px;
+}
+
+input, button {
+  padding: 10px;
+  margin: 5px 0;
+  width: 100%;
+  max-width: 300px;
+}
+
+button {
+  background-color: var(--secondary-light);
+  color: var(--text-color);
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--secondary);
 }
 
 .login-form {
@@ -125,15 +177,14 @@ header .site-logo {
   padding: calc(var(--space) * 0.5) calc(var(--space) * 1);
 }
 
-@media screen and (max-width: 700px) {
-  .site-logo {
-    font-size: calc(var(--font-size) * 1.25);
-    margin: 0;
+@media screen and (min-width: 600px) {
+  form {
+    max-width: 400px;
   }
-  header .site-logo {
-    font-size: var(--font-size);
-  }
-  header a {
-    margin: calc(var(--space) / 2);
+}
+
+@media screen and (min-width: 900px) {
+  form {
+    max-width: 600px;
   }
 }
